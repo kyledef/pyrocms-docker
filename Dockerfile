@@ -4,6 +4,8 @@ ENV DEBIAN_FRONTEND noninteractive
 EXPOSE 80
 EXPOSE 443
 
+RUN apt-get update
+
 # Install mysql
 RUN apt-get install -y mysql-server-5.6 mysql-client-5.6 mysqltuner 
 
@@ -20,8 +22,8 @@ RUN apt-get install -y wget unzip
 RUN wget https://github.com/pyrocms/pyrocms/archive/2.2/master.zip
 RUN unzip master.zip
 
-RUN mv pyrocms-2.2-master /var/www/html/
-RUN rm -r /var/www/html/installer/
+RUN mv pyrocms-2.2-master /var/www/html/pyrocms
+RUN rm -rf /var/www/html/pyrocms/installer/
 
 ADD ./bstrap.sh /bstrap.sh
 
