@@ -14,7 +14,7 @@ RUN apt-get install -y mysql-server mysql-client mysqltuner
 RUN apt-get install -y apache2 libapache2-mod-php5 php5-mysql apache2-utils 
 RUN a2enmod rewrite
 #TODO : change virtualhost configuration for rewrite (AllowOverride All)
-RUN sed -r -i -e's/.*?<Directory \/var\/www\/.*?>.*?AllowOverride(.*?)\n.*?/All/s'
+RUN sed -r -i -e's/^\s*AllowOverride\s+(.*)\s*$/All/mg' /etc/apache2/apache2.conf
 
 
 
