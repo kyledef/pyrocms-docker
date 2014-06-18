@@ -6,10 +6,6 @@ EXPOSE 443
 
 RUN apt-get update
 
-ENV MYSQL_HOST '127.0.0.1'
-ENV MYSQL_USERNAME 'root'
-ENV MYSQL_PASSWORD 'root'
-ENV MYSQL_PORT 3306
 
 # Install mysql
 #RUN apt-get install -y mysql-server mysql-client mysqltuner 
@@ -33,21 +29,35 @@ RUN rm -rf /var/www/html/installer/
 
 ADD ./bstrap.sh /bstrap.sh
 
+
+#MYSQL SETTINGS
+ENV PYRO_MYSQL_HOST 'localhost'
+ENV PYRO_MYSQL_USERNAME 'root'
+ENV PYRO_MYSQL_PASSWORD 'root'
+ENV PYRO_MYSQL_PORT 3306
+
+
+
+
 # configure pyrocms for installation
-
-
 
 RUN mv /var/www/html/system/cms/config/database.php.bak /var/www/html/system/cms/config/database.php
 
 
 #MODIFY DATABASE CONFIGURATION FILE
-RUN sed -r -i -e "s/^(\s*'hostname'\s*=>\s*)('.*')/\1$MYSQL_HOST/mg"  /var/www/html/system/cms/config/database.php
-RUN sed -r -i -e "s/^(\s*'username'\s*=>\s*)('.*')/\1$MYSQL_USERNAME/mg"  /var/www/html/system/cms/config/database.php
-RUN sed -r -i -e "s/^(\s*'password'\s*=>\s*)('.*')/\1$MYSQL_PASSWORD/mg"  /var/www/html/system/cms/config/database.php
-RUN sed -r -i -e "s/^(\s*'port'\s*=>\s*)(.*)/\1$MYSQL_PORT/mg"  /var/www/html/system/cms/config/database.php
+RUN sed -r -i -e "s/^(\s*'hostname'\s*=>\s*)('.*')/\1$PYRO_MYSQL_HOST/mg"  /var/www/html/system/cms/config/database.php
+RUN sed -r -i -e "s/^(\s*'username'\s*=>\s*)('.*')/\1$PYRO_MYSQL_USERNAME/mg"  /var/www/html/system/cms/config/database.php
+RUN sed -r -i -e "s/^(\s*'password'\s*=>\s*)('.*')/\1$PYRO_MYSQL_PASSWORD/mg"  /var/www/html/system/cms/config/database.php
+RUN sed -r -i -e "s/^(\s*'port'\s*=>\s*)([0-9]+)/\1$PYRO_MYSQL_PORT/mg"  /var/www/html/system/cms/config/database.php
 
 
 ADD pyro.sql /pyro.sql
 
 
+
+#need to modify mysql database to allow login with password as "root"
+ADD change_pwd.sql /change_pwd.sql
+
+
 ENV DEBIAN_FRONTEND interactive
+
